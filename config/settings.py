@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap4",
     'accounts',
+    'books',
 ]
 
 MIDDLEWARE = [
@@ -115,17 +116,23 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
-STATIC_URL = 'static/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+
+
+
+
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [str(BASE_DIR.joinpath("static"))]
 
 
 
