@@ -2,6 +2,8 @@ from audioop import reverse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import generic
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin # Ep.169 , Ep.171
+from django.contrib.auth.decorators import login_required # Ep.169
 
 from books.models import MdlBook
 from .forms import *
@@ -19,6 +21,7 @@ class BookListView(generic.ListView):
 #     template_name = "books/book_detail.html"
 #     context_object_name = "book"
     
+@login_required
 def book_detail_view(request, pk): #
     book = get_object_or_404(MdlBook, pk=pk)
     book_comments = book.comments.all() # mainmodel.relatedName.all()
@@ -39,18 +42,26 @@ def book_detail_view(request, pk): #
     }
     return render(request, "books/book_detail.html", context)
 
-class BookCreateView(generic.CreateView):
+class BookCreateView(LoginRequiredMixin, generic.CreateView):
     model = MdlBook
     fields = ["title", "author", "content", "price", "cover"]
     template_name = "books/book_create.html"
     
-class BookUpdateView(generic.UpdateView):
+class BookUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
     model = MdlBook
     fields = ["title", "author", "content", "price", "cover"]
     template_name = "books/book_update.html"
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
     
-class BookdeleteView(generic.DeleteView):
+class BookdeleteView(LoginRequiredMixin, generic.DeleteView):
     model = MdlBook
     template_name = "books/book_delete.html"
     success_url = reverse_lazy("book_list")
+    
+    def test_func(self):
+        obj = self.get_object()
+        return obj.user == self.request.user
     
